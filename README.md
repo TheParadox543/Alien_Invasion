@@ -1,2 +1,2 @@
-# alien_invasion
+# Alien Invasion
  My first Python game
