@@ -14,6 +14,7 @@ class AlienInvasion:
     def __init__(self):
         """Initialize the game, and create game resources."""
         pygame.init()
+        self.run = True
         self.settings = Settings()
 
         # # For window
@@ -36,6 +37,9 @@ class AlienInvasion:
         """Start the main loop for the game."""
         while True:
             self._check_events()
+            if self.run:
+                self.ship.update()
+                self._update_bullets()
             self._update_screen()
 
     def _check_events(self):
@@ -58,6 +62,11 @@ class AlienInvasion:
             self.ship.moving_left = True
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
+        elif event.key == pygame.K_ESCAPE:
+            if self.run == True:
+                self.run = False
+            else:
+                self.run = True
 
     def _check_keyup_events(self, event:Event):
         """Respond to key releases."""
@@ -68,6 +77,8 @@ class AlienInvasion:
 
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullets group."""
+        if len(self.bullets) < self.settings.bullets_allowed \
+                and self.run:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
 
