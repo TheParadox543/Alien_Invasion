@@ -1,7 +1,7 @@
-from pickle import FALSE
 import sys
 
 import pygame
+from pygame.event import Event
 
 from settings import Settings
 from ship import Ship
@@ -37,14 +37,16 @@ class AlienInvasion:
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
 
-    def _check_keydown_events(self, event):
+    def _check_keydown_events(self, event:Event):
         """Respond to keypresses."""
         if event.key == pygame.K_RIGHT:
             self.ship.moving_right = True
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True
+        elif event.key == pygame.K_q:
+            sys.exit()
 
-    def _check_keyup_events(self, event):
+    def _check_keyup_events(self, event:Event):
         """Respond to key releases."""
         if event.key == pygame.K_RIGHT:
             self.ship.moving_right = False
