@@ -80,15 +80,15 @@ class AlienInvasion:
             self.ship.moving_right = True
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True
-        elif event.key ==pygame.K_p:
-            self._start_game()
+        elif event.key == pygame.K_p:
+            if not self.stats.game_active:
+                self._start_game()
+            else:
+                self._pause_game()
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
         elif event.key == pygame.K_ESCAPE:
-            if self.run == True:
-                self.run = False
-            else:
-                self.run = True
+            self._pause_game()
 
     def _check_keyup_events(self, event:Event):
         """Respond to key releases."""
@@ -100,6 +100,9 @@ class AlienInvasion:
     def _start_game(self):
         """To start the game, if either play button or P is clicked."""
         if not self.stats.game_active:
+            # Reset the game settings.
+            self.settings.initialize_dynamic_settings()
+
             # Reset the game statistics.
             self.stats.reset_stats()
             self.stats.game_active = True
@@ -114,6 +117,13 @@ class AlienInvasion:
 
             # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
+
+    def _pause_game(self):
+        """Pauses or continues the game."""
+        if self.run == True:
+            self.run = False
+        else:
+            self.run = True
 
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullets group."""
@@ -142,6 +152,7 @@ class AlienInvasion:
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
 
     def _create_fleet(self):
         """Create a fleet of aliens."""
