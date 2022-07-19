@@ -6,6 +6,7 @@ from pygame.event import Event
 
 from settings import Settings
 from game_stats import GameStats
+from button import Button
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -19,25 +20,28 @@ class AlienInvasion:
         self.run = True
         self.settings = Settings()
 
-        # For window
-        self.screen = pygame.display.set_mode(
-            (self.settings.screen_width, self.settings.screen_height))
+        # # For window
+        # self.screen = pygame.display.set_mode(
+        #     (self.settings.screen_width, self.settings.screen_height))
 
-        # # For full screen
-        # self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        # self.settings.screen_width = self.screen.get_rect().width
-        # self.settings.screen_height = self.screen.get_rect().height
+        # For full screen
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.settings.screen_width = self.screen.get_rect().width
+        self.settings.screen_height = self.screen.get_rect().height
 
         pygame.display.set_caption("Alien Invasion")
 
         # Create an instance of GameStats to store stats.
         self.stats = GameStats(self)
 
-        # Creating elements of the game
+        # Creating elements of the game.
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         self._create_fleet()
+
+        # Make the play button.
+        self.play_button = Button(self, "Play")
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -54,10 +58,18 @@ class AlienInvasion:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+
+    def _check_play_button(self, mouse_pos):
+        """Start a new game when the player clicks Play."""
+        if self.play_button.rect.collidepoint(mouse_pos):
+            self.stats.game_active = True
 
     def _check_keydown_events(self, event:Event):
         """Respond to keypresses."""
@@ -151,6 +163,9 @@ class AlienInvasion:
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_hit()
 
+        # Look for aliens hitting the bottom of the secret.
+        self._check_aliens_bottoms()
+
     def _check_fleet_edges(self):
         """Respond appropriately if any aliens have reached an edge."""
         for alien in self.aliens.sprites():
@@ -184,7 +199,7 @@ class AlienInvasion:
             self.stats.game_active = False
 
     def _check_aliens_bottoms(self):
-        """Check if any aliens have reachedd the bottom of the screen."""
+        """Check if any aliens have reached the bottom of the screen."""
         screen_rect = self.screen.get_rect()
         for alien in self.aliens.sprites():
             if alien.rect.bottom >= screen_rect.bottom:
@@ -200,6 +215,10 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
+
+        # Draw the play button if the game is inactive.
+        if not self.stats.game_active:
+            self.play_button.draw_button()
 
         # Make the most recently drawn screen visible.
         pygame.display.flip()
