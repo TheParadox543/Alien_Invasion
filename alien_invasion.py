@@ -77,6 +77,7 @@ class AlienInvasion:
     def _check_keydown_events(self, event:Event):
         """Respond to keypresses."""
         if event.key == pygame.K_q:
+            self.stats.write_high_score()
             sys.exit()
         elif event.key == pygame.K_RIGHT:
             self.ship.moving_right = True
