@@ -1,8 +1,6 @@
 import pygame
 import pygame.font
 
-from settings import Settings
-
 class Button:
     """To create a button."""
 
