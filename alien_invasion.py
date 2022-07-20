@@ -6,6 +6,7 @@ from pygame.event import Event
 
 from settings import Settings
 from game_stats import GameStats
+from scoreboard import Scoreboard
 from button import Button
 from ship import Ship
 from bullet import Bullet
@@ -31,8 +32,9 @@ class AlienInvasion:
 
         pygame.display.set_caption("Alien Invasion")
 
-        # Create an instance of GameStats to store stats.
+        # Create instances to store stats and display score.
         self.stats = GameStats(self)
+        self.scoreboard = Scoreboard(self)
 
         # Creating elements of the game.
         self.ship = Ship(self)
@@ -250,6 +252,9 @@ class AlienInvasion:
             bullet.draw_bullet()
         # self.bullets.draw(self.screen) doesn't work since we have rendered it.
         self.aliens.draw(self.screen)
+
+        # Draw the scoreboard on the screen.
+        self.scoreboard.show_score()
 
         # Draw the play button if the game is inactive.
         if not self.stats.game_active:
