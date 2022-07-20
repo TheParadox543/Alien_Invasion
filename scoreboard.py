@@ -20,11 +20,8 @@ class Scoreboard:
         self.text_color = (30, 30, 30)
         self.font = pygame.font.SysFont(None, 48)
 
-        # Prepare the initial score image.
-        self.prep_score()
-        self.prep_high_score()
-        self.prep_level()
-        self.prep_ships()
+        # Setup the scores and ships left.
+        self.prep_images()
 
     def prep_score(self):
         """Turn the sdcore into a redndered image."""
@@ -40,7 +37,7 @@ class Scoreboard:
         self.score_rect.top = 20
 
     def prep_high_score(self):
-        """TUrn the high score into a rendered image."""
+        """Turn the high score into a rendered image."""
         high_score = round(self.stats.high_score, -1)
         high_score_str = "{:,}".format(high_score)
         self.high_score_image = self.font.render(high_score_str, True,
@@ -83,3 +80,10 @@ class Scoreboard:
         if self.stats.score > self.stats.high_score:
             self.stats.high_score = self.stats.score
             self.prep_high_score()
+
+    def prep_images(self):
+        """Prepare all stats images on startup."""
+        self.prep_score()
+        self.prep_high_score()
+        self.prep_level()
+        self.prep_ships()
